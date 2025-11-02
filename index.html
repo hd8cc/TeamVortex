@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vortex Development</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #12121c;
+      --card-bg-color: #1a1a2a;
+      --text-color: #e0e0e0;
+      --heading-color: #ffffff;
+      --accent-color: #4a90e2;
+      --accent-hover-color: #357abd;
+      --border-color: #2a2a3a;
+      --input-bg-color: #252535;
+      --success-color: #2ecc71;
+      --error-color: #e74c3c;
+    }
+
+    body.light-mode {
+      --bg-color: #f4f5f7;
+      --card-bg-color: #ffffff;
+      --text-color: #444444;
+      --heading-color: #111111;
+      --accent-color: #0056b3;
+      --accent-hover-color: #004494;
+      --border-color: #e0e0e0;
+      --input-bg-color: #f0f0f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      background-image: radial-gradient(circle at 1% 1%, var(--accent-color) 0.5px, transparent 0.5px),
+                        radial-gradient(circle at 99% 99%, var(--accent-color) 0.5px, transparent 0.5px);
+      background-size: 40px 40px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background-color: var(--card-bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem 2.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      animation: fadeInUp 0.8s forwards ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 { color: var(--heading-color); font-weight: 700; margin-bottom: 0.5rem; }
+    .subtitle { font-size: 1.1rem; font-weight: 300; margin-bottom: 2rem; }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    button {
+      font-family: 'Poppins', sans-serif;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-hover-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--accent-color);
+      border: 1px solid var(--accent-color);
+    }
+    .btn-secondary:hover {
+      background-color: var(--accent-color);
+      color: white;
+    }
+
+    #scriptContainer {
+      text-align: left;
+      margin-top: 2rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .script-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--input-bg-color);
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    #copyBtn {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      background-color: var(--accent-color);
+      color: white;
+      border-radius: 5px;
+    }
+    #copyBtn:hover { background-color: var(--accent-hover-color); }
+
+    #scriptContent {
+      display: block;
+      background-color: var(--bg-color);
+      color: #a7d1ff;
+      padding: 1.5rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      user-select: text;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Vortex Scripts</h1>
+    <p class="subtitle">by Team Vortex</p>
+
+    <div class="button-group">
+      <button id="toggleBtn" class="btn-secondary">Switch to Light Mode</button>
+      <button id="getScriptBtn" class="btn-primary">Get Script</button>
+    </div>
+
+    <div id="scriptContainer">
+      <div class="script-header">
+        <span>Script</span>
+        <button id="copyBtn">Copy</button>
+      </div>
+      <pre><code id="scriptContent">PRIVATE ACCESS</code></pre>
+    </div>
+  </main>
+
+  <script>
+    // Run JS after DOM is ready
+    window.addEventListener("DOMContentLoaded", () => {
+      const toggleBtn = document.getElementById("toggleBtn");
+      const getScriptBtn = document.getElementById("getScriptBtn");
+      const scriptContainer = document.getElementById("scriptContainer");
+      const copyBtn = document.getElementById("copyBtn");
+      const scriptContent = document.getElementById("scriptContent");
+      const body = document.body;
+
+      // --- Theme Toggle ---
+      const updateThemeButton = () => {
+        const isLight = body.classList.contains("light-mode");
+        toggleBtn.textContent = isLight ? "Switch to Dark Mode" : "Switch to Light Mode";
+      };
+
+      if (localStorage.getItem("theme") === "light") body.classList.add("light-mode");
+      updateThemeButton();
+
+      toggleBtn.addEventListener("click", () => {
+        body.classList.toggle("light-mode");
+        const isLight = body.classList.contains("light-mode");
+        localStorage.setItem("theme", isLight ? "light" : "dark");
+        updateThemeButton();
+      });
+
+      // --- Show/Hide Script Container ---
+      getScriptBtn.addEventListener("click", () => {
+        const isHidden = scriptContainer.style.display === "none" || !scriptContainer.style.display;
+        scriptContainer.style.display = isHidden ? "block" : "none";
+        getScriptBtn.textContent = isHidden ? "Hide Script" : "Get Script";
+      });
+
+      // --- Copy Script to Clipboard ---
+      copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(scriptContent.textContent)
+          .then(() => {
+            copyBtn.textContent = "Copied!";
+            copyBtn.style.backgroundColor = "var(--success-color)";
+            setTimeout(() => {
+              copyBtn.textContent = "Copy";
+              copyBtn.style.backgroundColor = "var(--accent-color)";
+            }, 2000);
+          })
+          .catch(() => {
+            copyBtn.textContent = "Failed!";
+            copyBtn.style.backgroundColor = "var(--error-color)";
+            setTimeout(() => {
+              copyBtn.textContent = "Copy";
+              copyBtn.style.backgroundColor = "var(--accent-color)";
+            }, 2000);
+          });
+      });
+    });
+  </script>
+</body>
+</html>
